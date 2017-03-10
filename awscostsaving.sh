@@ -63,7 +63,7 @@ function INSTANCE_STATUS(){
   INST_NIGHT_SLEEP=(`COLLECT_NIGHT_SLEEP_INSTANCES`)
 
   for INSTANCE_ID in "${INST_NIGHT_SLEEP[@]}";do
-    INSTANCE_STATE=$($AWS_CLI descripbe-instances --instance-id $INSTANCE_ID --output test | grep -w STATE | awk '{print $NF}')
+    INSTANCE_STATE=$($AWS_CLI describe-instances --instance-id $INSTANCE_ID --output text | grep -w STATE | awk '{print $NF}')
     echo "Instance $INSTANCE_ID is under Night Sleep and Its current state is $INSTANCE_STATE"
   done
 }
