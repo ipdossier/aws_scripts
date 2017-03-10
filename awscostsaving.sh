@@ -11,7 +11,7 @@
 
 # variable definitions
 
-AWS_CLI='/usr/bin/aws ec2'
+AWS_CLI="$(which aws|head -n1) ec2"
 DATE=`date +%Y-%m-%d`
 LOGDIR='/var/log/nightsleep'
 LOG_START_INST=$LOGDIR/startlog.$DATE
