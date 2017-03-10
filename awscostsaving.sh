@@ -26,7 +26,7 @@ fi
 
 # this function is to collect the instance-id for instances with Key/Value = NightSleep/True
 
-function COLLECT_NIGHT_SLEEP_INSTANCES(){
+function collect_night_sleep_instances(){
 
   $AWS_CLI describe-tags --filters "Name=resource-type,Values=instance" "Name=key,Values=NightSleep" "Name=value,Values=True" | grep ResourceId | awk '{print $NF}' | cut -d '"' -f2
   
@@ -34,37 +34,37 @@ function COLLECT_NIGHT_SLEEP_INSTANCES(){
 
 # this function is to start the instance with Key/Value = NightSleep/True
 
-function INSTANCE_START(){
-  INST_NIGHT_SLEEP=(`COLLECT_NIGHT_SLEEP_INSTANCES`)
+function instance_start(){
+  inst_night_sleep=(`collect_night_sleep_instances`)
 
-  for INSTANCE_ID in "${INST_NIGHT_SLEEP[@]}";do
-    echo "## working on instance startup : $INSTANCE_ID ##" | tee -a $LOG_START_INST
-    $AWS_CLI start-instances --instance-id $INSTANCE_ID | tee -a $LOG_START_INST
+  for instance_id in "${inst_night_sleep[@]}";do
+    echo "## working on instance startup : $instance_id ##" | tee -a $LOG_START_INST
+    $AWS_CLI start-instances --instance-id $instance_id | tee -a $LOG_START_INST
   done
 
 }
 
 # this function is to stop the instance with Key/Value = NightSleep/True
 
-function INSTANCE_STOP(){
-  INST_NIGHT_SLEEP=(`COLLECT_NIGHT_SLEEP_INSTANCES`)
+function instance_stop(){
+  inst_night_sleep=(`collect_night_sleep_instances`)
 
-  for INSTANCE_ID in "${INST_NIGHT_SLEEP[@]}";do
-    echo "## working on instance stop : $INSTANCE_ID ##" | tee -a $LOG_STOP_INST
-    $AWS_CLI stop-instances --instance-id $INSTANCE_ID | tee -a $LOG_STOP_INST
+  for instance_id in "${inst_night_sleep[@]}";do
+    echo "## working on instance stop : $instance_id ##" | tee -a $LOG_STOP_INST
+    $AWS_CLI stop-instances --instance-id $instance_id | tee -a $LOG_STOP_INST
   done
 
 }
 
 # this function is to check the status of instances with Key/Value = NightSleep/True
 
-function INSTANCE_STATUS(){
+function instance_status(){
 
-  INST_NIGHT_SLEEP=(`COLLECT_NIGHT_SLEEP_INSTANCES`)
+  inst_night_sleep=(`collect_night_sleep_instances`)
 
-  for INSTANCE_ID in "${INST_NIGHT_SLEEP[@]}";do
-    INSTANCE_STATE=$($AWS_CLI describe-instances --instance-id $INSTANCE_ID --output text | grep -w STATE | awk '{print $NF}')
-    echo "Instance $INSTANCE_ID is under Night Sleep and Its current state is $INSTANCE_STATE"
+  for instance_id in "${inst_night_sleep[@]}";do
+    instance_state=$($AWS_CLI describe-instances --instance-id $instance_id --output text | grep -w STATE | awk '{print $NF}')
+    echo "Instance $instance_id is under Night Sleep and Its current state is $instance_state"
   done
 }
 
@@ -73,9 +73,9 @@ function INSTANCE_STATUS(){
 
 OPTION=$1
 case $OPTION in
-  start)  INSTANCE_START ;;
-  stop)  INSTANCE_STOP ;;
-  status) INSTANCE_STATUS ;;
+  start)  instance_start ;;
+  stop)   instance_stop ;;
+  status) instance_status ;;
   *) echo "Error occurred : valid options are stop/start/status" ;;
 esac
 
