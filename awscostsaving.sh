@@ -26,7 +26,7 @@ fi
 
 # this function is to collect the instance-id for instances with Key/Value = NightSleep/True
 
-function COLLECT_NGIHT_SLEEP_INSTANCES(){
+function COLLECT_NIGHT_SLEEP_INSTANCES(){
 
   $AWS_CLI describe-tags --filters "Name=resource-type,Values=instance" "Name=key,Values=NightSleep" "Name=value,Values=True" | grep ResourceId | awk '{print $NF}' | cut -d '"' -f2
   
