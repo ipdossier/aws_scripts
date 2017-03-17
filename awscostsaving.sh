@@ -30,7 +30,7 @@ fi
 function collect_instances(){
   [ "x${TAG_VALUE}" = "x" ] && echo ""
 
-  aws ec2 describe-tags --filters "Name=resource-type,Values=instance" "Name=key,Values=${TAG_KEY}" "Name=value,Values=${TAG_VALUE}" | grep ResourceId | awk '{print $NF}' | cut -d '"' -f2
+  /root/bin/aws ec2 describe-tags --filters "Name=resource-type,Values=instance" "Name=key,Values=${TAG_KEY}" "Name=value,Values=${TAG_VALUE}" | grep ResourceId | awk '{print $NF}' | cut -d '"' -f2
   
 }
 
@@ -41,7 +41,7 @@ function instance_start(){
 
   for instance_id in "${instances[@]}";do
     echo "## working on instance startup : $instance_id ##" | tee -a $LOG_START_INST
-    aws ec2 start-instances --instance-id $instance_id | tee -a $LOG_START_INST
+    /root/bin/aws ec2 start-instances --instance-id $instance_id | tee -a $LOG_START_INST
   done
 
 }
@@ -53,7 +53,7 @@ function instance_stop(){
 
   for instance_id in "${instances[@]}";do
     echo "## working on instance stop : $instance_id ##" | tee -a $LOG_STOP_INST
-    aws ec2 stop-instances --instance-id $instance_id | tee -a $LOG_STOP_INST
+    /root/bin/aws ec2 stop-instances --instance-id $instance_id | tee -a $LOG_STOP_INST
   done
 
 }
@@ -63,7 +63,7 @@ function instance_stop(){
 function instance_status(){
   instances=(`collect_instances`)
   for instance_id in "${instances[@]}";do
-    instance_info=$(aws ec2 describe-instances --instance-id $instance_id --output text)
+    instance_info=$(/root/bin/aws ec2 describe-instances --instance-id $instance_id --output text)
     while read line;do
 #    while read -r line;do
       if [[ "${line}" =~ ^STATE ]];then
